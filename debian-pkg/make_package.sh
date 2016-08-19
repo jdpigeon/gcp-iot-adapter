@@ -15,7 +15,12 @@ INITSCRIPT="/tmp/debian-pkg/gcp-iot-adapter-initscript"
 mkdir -p $WORKDIR
 cd $WORKDIR
 
-tar xzf $DEB_BASE_TARBALL
+#tar xzf $DEB_BASE_TARBALL
+
+# set version number in package files
+cp -r ../DEBIAN .
+sed -i "s/VER_NUMBER_HERE/${REL}/g" DEBIAN/control
+sed -i "s/VER_NUMBER_HERE/${REL}/g" DEBIAN/postinst
 
 # dirs to create in our fake "root filesystem"
 mkdir -p opt/gcp-iot-adapter/

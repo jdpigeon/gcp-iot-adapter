@@ -1,0 +1,10 @@
+Package: gcp-iot-adapter
+Version: VER_NUMBER_HERE-1 
+Section: net
+Priority: extra
+Architecture: amd64
+Depends: 
+Maintainer: Agosto Dev Team <dev@agosto.com>
+Description: GCP IoT Adapter
+ Works as a high-performance bridge between
+ RabbitMQ and Google Cloud Pub/Sub.

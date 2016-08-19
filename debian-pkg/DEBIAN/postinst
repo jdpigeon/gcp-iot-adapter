@@ -1,0 +1,44 @@
+#! /bin/bash
+
+set -e
+
+REL="VER_NUMBER_HERE"
+
+USERACCT=gcpiotadapter
+BASEDIR=/opt/gcp-iot-adapter
+LOGDIR=/var/log/gcp-iot-adapter/
+REL_DIR=${BASEDIR}/releases/${REL}
+INITSCRIPT=gcp-iot-adapter.initscript
+
+cd $BASEDIR
+
+
+# create user account
+if ! getent group $USERACCT >/dev/null; then
+  addgroup --system $USERACCT
+fi
+if ! getent passwd $USERACCT >/dev/null; then
+  adduser --system --ingroup gcpiotadapter --home /opt/gcp-iot-adapter --no-create-home --gecos "GCP IoT Broker Adapter" $USERACCT
+  usermod -s /bin/bash $USERACCT
+fi
+
+# copy default config file to /etc/ if one doesn't exist
+if [ ! -f /etc/gcp-iot-adapter.conf ]; then
+  cp $REL_DIR/amqp_pubsub.conf.dist /etc/gcp-iot-adapter.conf
+fi
+
+# Make sure logdir is owned by the proper user
+chown -v $USERACCT.$USERACCT $LOGDIR
+
+# make sure start script is executable
+#chmod +x ${REL_DIR}/amqp_pubsub.sh
+
+# make sure install is owned by the proper user
+chown -R ${USERACCT}.${USERACCT} ${BASEDIR}
+
+# copy init script into place
+#cp -f $INITSCRIPT /etc/init.d/gcp-iot-adapter
+#chown root.root /etc/init.d/gcp-iot-adapter
+#chmod +x /etc/init.d/gcp-iot-adapter
+
+update-rc.d gcp-iot-adapter defaults
