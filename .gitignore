@@ -1,0 +1,8 @@
+/_build
+/cover
+/deps
+apps/amqp_pubsub/rel
+erl_crash.dump
+amqp_pubsub.tar.gz
+*.ez
+*.deb

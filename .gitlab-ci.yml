@@ -1,0 +1,12 @@
+image: "elixir:1.2"  
+before_script:  
+  - apt-get update && apt-get -y install git
+  - mix local.hex --force
+  - mix local.rebar --force
+  - mix deps.get
+build:  
+  script:
+    - (cd apps/amqp_pubsub && MIX_ENV=prod mix do deps.compile, compile, release)
+  artifacts:
+    paths:
+    - apps/amqp_pubsub/rel/amqp_pubsub/releases/
