@@ -8,13 +8,8 @@ defmodule AmqpPubsub.Google.Pubsub do
 
   def publish(topic, body) do
     full_topic = get_full_pubsub_topic(topic)
-    #Logger.debug "Body: #{inspect body}"
     response = Topics.publish(@google_api_executor, @google_api_executor_pid, topic: full_topic, body: body)
   end
-
-  #def create_cloud_pubsub_topic(name) do
-  #  create_cloud_pubsub_topic name, Application.get_env(:amqp_pubsub, :pubsub_project_prefix)
-  #end
 
   def create_cloud_pubsub_topic(name) do
     full_pubsub_topic = get_full_pubsub_topic(name)
@@ -23,10 +18,10 @@ defmodule AmqpPubsub.Google.Pubsub do
       {:ok, resp = %{status_code: 404}} -> Logger.debug "topic not found, creating it!"
                         Logger.debug "#{inspect resp}"
                         create_resp = Topics.create(@google_api_executor, @google_api_executor_pid, name: full_pubsub_topic)
-                        Logger.debug "create_resp:"
+                        Logger.debug "Topic create response:"
                         Logger.debug "#{inspect create_resp}"
-      {:ok, resp} -> Logger.debug "topic was found"
-                     Logger.debug "#{inspect resp}"
+      {:ok, resp} -> Logger.debug "Topic was found: #{full_pubsub_topic}"
+                     Logger.debug "Response: #{inspect resp}"
     end
   end
 
