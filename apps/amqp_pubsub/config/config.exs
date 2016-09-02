@@ -39,8 +39,8 @@ config :amqp_pubsub, ampq_exchange: "amq.topic"
 config :amqp_pubsub, pubsub_project_prefix: "projects/hmi-twisthink-poc/"
 config :amqp_pubsub, disable_queue_creation: false
 
-config :amqp_pubsub_reverse, subscription: "rabbitmq-proxy"
-config :amqp_pubsub_reverse, topic: "to-gateway"
+config :amqp_pubsub, reverse_subscription: "rabbitmq-proxy"
+config :amqp_pubsub, reverse_topic: "to-gateway"
 
 
 config :logger, level: :debug
@@ -61,11 +61,9 @@ system_env = [
     username: "AMQP_PUBSUB_RMQ_USERNAME",
     password: "AMQP_PUBSUB_RMQ_PASSWORD",
     exchange: "AMQP_PUBSUB_RMQ_EXCHANGE",
-    full_topic_path: "AMQP_PUBSUB_GCP_PS_TOPIC"
-  ],
-  amqp_pubsub_reverse: [
-    subscription: "AMQP_PUBSUB_REVERSE_SUBSCRIPTION",
-    topic: "AMQP_PUBSUB_REVERSE_TOPIC"
+    full_topic_path: "AMQP_PUBSUB_GCP_PS_TOPIC",
+    reverse_subscription: "AMQP_PUBSUB_REVERSE_SUBSCRIPTION",
+    rervser_topic: "AMQP_PUBSUB_REVERSE_TOPIC"
   ],
   oauth_jwt: [
     secrets_file: "AMQP_PUBSUB_OAUTH_CLIENT_SECRETS_FILE",
