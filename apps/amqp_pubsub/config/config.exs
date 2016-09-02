@@ -36,7 +36,7 @@ config :amqp_pubsub, :ampq_conn_options,
   password: "test"
 
 config :amqp_pubsub, ampq_exchange: "amq.topic"
-config :amqp_pubsub, pubsub_project_prefix: "projects/hmi-twisthink-poc/"
+config :amqp_pubsub, pubsub_project_prefix: "projects/insert-project-id-here/"
 config :amqp_pubsub, disable_queue_creation: false
 
 config :amqp_pubsub, reverse_subscription: "rabbitmq-proxy"
