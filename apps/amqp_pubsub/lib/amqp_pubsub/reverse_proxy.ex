@@ -17,8 +17,8 @@ defmodule AmqpPubsub.ReverseProxy do
     {:ok, chan} = Channel.open(conn)
     Basic.qos(chan, prefetch_count: 10)
 
-    Pubsub.create_cloud_pubsub_topic(Application.get_env(:amqp_pubsub_reverse, :topic))
-    Pubsub.create_subscription(Application.get_env(:amqp_pubsub_reverse, :subscription), Application.get_env(:amqp_pubsub_reverse, :topic))
+    Pubsub.create_cloud_pubsub_topic(Application.get_env(:amqp_pubsub, :reverse_topic))
+    Pubsub.create_subscription(Application.get_env(:amqp_pubsub, :reverse_subscription), Application.get_env(:amqp_pubsub, :reverse_topic))
 
     schedule_work()
     {:ok, chan}
@@ -32,7 +32,7 @@ defmodule AmqpPubsub.ReverseProxy do
   defp do_work(chan) do
     body = %{ "returnImmediately" => false,
               "maxMessages" => 30 }
-    acks = case Pubsub.pull_subscription(Application.get_env(:amqp_pubsub_reverse, :subscription), body, recv_timeout: :infinity) do
+    acks = case Pubsub.pull_subscription(Application.get_env(:amqp_pubsub, :reverse_subscription), body, recv_timeout: :infinity) do
       {:ok, resp} ->
         case (resp.body |> Poison.decode!)["receivedMessages"] do
           messages when is_list(messages) ->
@@ -63,7 +63,7 @@ defmodule AmqpPubsub.ReverseProxy do
 
     if not Enum.empty? acks do
       ackBody = %{"ackIds" => acks}
-      ackResp = Pubsub.ack_subscription(Application.get_env(:amqp_pubsub_reverse, :subscription), ackBody)
+      ackResp = Pubsub.ack_subscription(Application.get_env(:amqp_pubsub, :reverse_subscription), ackBody)
     end
 
     schedule_work()

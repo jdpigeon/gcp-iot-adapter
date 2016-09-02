@@ -63,7 +63,7 @@ system_env = [
     exchange: "AMQP_PUBSUB_RMQ_EXCHANGE",
     full_topic_path: "AMQP_PUBSUB_GCP_PS_TOPIC",
     reverse_subscription: "AMQP_PUBSUB_REVERSE_SUBSCRIPTION",
-    rervser_topic: "AMQP_PUBSUB_REVERSE_TOPIC"
+    reverse_topic: "AMQP_PUBSUB_REVERSE_TOPIC"
   ],
   oauth_jwt: [
     secrets_file: "AMQP_PUBSUB_OAUTH_CLIENT_SECRETS_FILE",
