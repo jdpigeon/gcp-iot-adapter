@@ -145,7 +145,23 @@ See the moduledoc for `Conform.Schema.Validator` for more details and examples.
       doc: "MQTT topics to forward to Google Cloud PubSub. Wildcards can have an assoicated name to be parsed and forwarded as metadata in the PubsubMessage, otherwise a default name will be used.",
       hidden: false,
       to: "amqp_pubsub.routes"
-    ]
+    ],
+    "amqp_pubsub.reverse_subscription": [
+      commented: false,
+      datatype: :binary,
+      default: "rabbitmq-proxy",
+      doc: "Google Cloud Pub/Sub subscription name for messages intended to be relayed to the adapter.",
+      hidden: false,
+      to: "amqp_pubsub.reverse_subscription"
+    ],
+    "amqp_pubsub.reverse_topic": [
+      commented: false,
+      datatype: :binary,
+      default: "to-gateway",
+      doc: "Google Cloud Pub/Sub topic for messages intended to be relayed to the adapter.",
+      hidden: false,
+      to: "amqp_pubsub.reverse_topic"
+    ],
   ],
   transforms: [],
   validators: []

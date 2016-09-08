@@ -21,7 +21,7 @@ if [ "$JQ" == "" ]; then
   exit 1
 fi
 
-LOG="test_sub_debug.log"
+LOG="pubsub-iot-tester_debug.log"
 echo "" > $LOG
 
 function get_access_token() {
