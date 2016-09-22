@@ -34,30 +34,37 @@ defmodule AmqpPubsub.ReverseProxy do
               "maxMessages" => 30 }
     acks = case Pubsub.pull_subscription(Application.get_env(:amqp_pubsub, :reverse_subscription), body, recv_timeout: :infinity) do
       {:ok, resp} ->
-        case (resp.body |> Poison.decode!)["receivedMessages"] do
-          messages when is_list(messages) ->
-            for receivedMessage = %{"ackId" => ackId, "message" => message = %{ "data" => data, "messageId" => messageId, "publishTime" => publishTime}} <- messages do
-              case message do
-                %{"attributes" => %{"topic" => topic}} ->
-                  payload = Base.decode64!(data)
-                  amqp_topic = String.replace(topic, "/", ".")
-                  ampq_exchange = Application.get_env(:amqp_pubsub, :ampq_exchange)
-                  case Basic.publish chan, ampq_exchange, amqp_topic, payload do
-                    :ok -> ackId
-                    err_ret -> Logger.debug "Error forwarding to rabbitmq: #{inspect err_ret}"
-                               nil
+        response = resp.body |> Poison.decode
+        case response do
+          {:ok, decoded_response} -> 
+            case decoded_response["receivedMessages"] do
+              messages when is_list(messages) ->
+                for receivedMessage = %{"ackId" => ackId, "message" => message = %{ "data" => data, "messageId" => messageId, "publishTime" => publishTime}} <- messages do
+                  case message do
+                    %{"attributes" => %{"topic" => topic}} ->
+                      payload = Base.decode64!(data)
+                      amqp_topic = String.replace(topic, "/", ".")
+                      ampq_exchange = Application.get_env(:amqp_pubsub, :ampq_exchange)
+                      case Basic.publish chan, ampq_exchange, amqp_topic, payload do
+                        :ok -> ackId
+                        err_ret -> Logger.debug "Error forwarding to rabbitmq: #{inspect err_ret}"
+                                  nil
+                      end
+                      ackId  # ack all Pubsub messages for now
+                    _ ->
+                      Logger.debug "No topic in attributes!"
+                      ackId
                   end
-                  ackId  # ack all Pubsub messages for now
-                _ ->
-                  Logger.debug "No topic in attributes!"
-                  ackId
-              end
-            end |> Enum.filter(&(not is_nil(&1)))
-          _ ->
-            # no messsages to pull
-            []
+                end |> Enum.filter(&(not is_nil(&1)))
+              _ ->
+                # no messsages to pull
+                []
+            end
+          {:error, error } -> Logger.debug "Error decoding messages... \n#{inspect error}"
+                              Logger.debug "Response body was: #{resp.body}"
+                              []
         end
-      {:error, resp} -> Logger.debug "Some error pulling messages...\n#{inspect resp}"
+      {:error, resp} -> Logger.debug "Error pulling messages...\n#{inspect resp}"
                         []
     end
 
